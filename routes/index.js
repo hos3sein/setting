@@ -32,4 +32,9 @@ router.use("/point", point);
 const dev = require("./dev");
 router.use("/dev", dev);
 
+const log = require("./logger");
+router.use("/log", log);
+
+
+
 module.exports = router;

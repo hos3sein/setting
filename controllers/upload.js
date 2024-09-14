@@ -2,6 +2,7 @@ const asyncHandler = require("../middleware/async");
 const ErrorResponse = require("../utils/errorResponse");
 
 const UploadFile = require("../models/UploadFile");
+const logger = require("../models/logger");
 
 exports.setUploadSetting = asyncHandler(async (req, res, next) => {
   const { maxSize, count } = req.body;
@@ -14,7 +15,14 @@ exports.setUploadSetting = asyncHandler(async (req, res, next) => {
       maxSize,
       count,
     });
-
+    const Log = {
+      admin : {username :req.admin.username , phone : req.admin.phone , adminRole : req.admin?.adminRole , group :  req.admin?.group , firstName : req.admin?.firstName , lastName : req.admin?.lastName},
+      section : "Setting",
+      part : "update file size",
+      success : true,
+      description : `${req.admin.username}  has successfully update file size to : ${maxSize} , ${count} `,
+    }
+    await logger.create(Log)
     return res.status(200).json({
       success: true,
       data: create,
@@ -27,7 +35,14 @@ exports.setUploadSetting = asyncHandler(async (req, res, next) => {
     maxSize,
     count,
   });
-
+  const Log = {
+    admin : {username :req.admin.username , phone : req.admin.phone , adminRole : req.admin?.adminRole , group :  req.admin?.group , firstName : req.admin?.firstName , lastName : req.admin?.lastName},
+    section : "Setting",
+    part : "create file size",
+    success : true,
+    description : `${req.admin.username}  has successfully create file size with value of : ${maxSize} , ${count} `,
+  }
+  await logger.create(Log)
   res.status(200).json({
     success: true,
     data: {},

@@ -7,7 +7,7 @@ const { protect } = require("../middleware/auth");
 const router = express.Router();
 
 // POST
-router.post("/createandupdate", C.createAndUpdate);
+router.post("/createandupdate", protect ,C.createAndUpdate);
 // router.post("/up/:id", C.update);
 
 // GET

@@ -2,24 +2,37 @@ const asyncHandler = require("../middleware/async");
 const ErrorResponse = require("../utils/errorResponse");
 const Category = require("../models/Category");
 const { refresh, upNameCat, remcontentByCat } = require("../utils/request");
+const logger = require("../models/logger");
+
 
 // @desc      create Category
 // @route     POST /api/v1/admins/category/create
 // @access    private
 exports.create = asyncHandler(async (req, res, next) => {
   const { name, number } = req.body;
-
+  console.log('>><<>><' , req.admin)
   if (!name || !number) {
     return next(new ErrorResponse("Please add name and number", 401));
   }
 
   console.log("name, number", name, number);
+  const exitstance = await Category.findOne({number : number})
+  if (exitstance){
+    return next(new ErrorResponse("this number is already using", 400));
+  }
   const create = await Category.create({
     name,
     number,
   });
+  const Log = {
+    admin : {username :req.admin.username , phone : req.admin.phone , adminRole : req.admin?.adminRole , firstName : req.admin?.firstName , lastName : req.admin?.lastName},
+    section : "Setting",
+    part : "create new Category",
+    success : true,
+    description : `${req.admin.username}  has successfully create a new category with the name ${name} and number ${number}`,
+  }
 
-  // await refresh();
+  await logger.create(Log)
 
   res.status(200).json({
     success: true,
@@ -49,7 +62,15 @@ exports.update = asyncHandler(async (req, res, next) => {
     name,
     number,
   });
+  const Log = {
+    admin : {username :req.admin.username , phone : req.admin.phone , adminRole : req.admin?.adminRole , group :  req.admin?.group , firstName : req.admin?.firstName , lastName : req.user?.lastName},
+    section : "Setting",
+    part : "update a Category",
+    success : true,
+    description : `${req.admin.username}  has successfully update a category with the name ${find.name} and number ${find.number} to ${name} and ${number}`,
+  }
 
+  await logger.create(Log)
   // await refresh();
   res.status(200).json({
     success: true,
@@ -96,16 +117,24 @@ exports.updateSub = asyncHandler(async (req, res, next) => {
 exports.remove = asyncHandler(async (req, res, next) => {
   const find = await Category.findById(req.params.id);
   await remcontentByCat(find.name);
-
+  console.log('lets check ittttttttt',req.admin)
   await find.remove();
 
   // await refresh();
-
+  const Log = {
+    admin : {username :req.admin.username , phone : req.admin.phone , adminRole : req.admin?.adminRole , group :  req.admin?.group , firstName : req.admin?.firstName , lastName : req.admin?.lastName},
+    section : "Setting",
+    part : "remove a Category",
+    success : true,
+    description : `${req.admin.username}  has successfully remove a category with the name ${find.name} and number ${find.number}`,
+  }
+  await logger.create(Log)
   res.status(200).json({
     success: true,
     data: {},
   });
 });
+
 
 // @desc      create Permission
 // @route     POST /api/v1/admins/permission/all/:id

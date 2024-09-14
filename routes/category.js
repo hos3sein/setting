@@ -7,9 +7,9 @@ const { protect } = require("../middleware/auth");
 const router = express.Router();
 
 // POST
-router.post("/create", C.create);
+router.post("/create", protect ,C.create);
 
-router.put("/up/:id", C.update);
+router.put("/up/:id",protect ,C.update);
 
 // GET
 router.get("/all", C.all);
@@ -17,7 +17,7 @@ router.get("/all", C.all);
 router.get("/one/:id", C.one);
 
 // REMOVE
-router.delete("/rem/:id", C.remove);
+router.delete("/rem/:id", protect , C.remove);
 
 module.exports = router;
 
