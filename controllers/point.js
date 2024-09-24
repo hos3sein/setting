@@ -271,3 +271,20 @@ exports.getAllCancelPoint=asyncHandler(async (req, res, next) => {
 });
 
 
+
+
+exports.getAllVariables = asyncHandler(async(req , res , next)=>{
+  const countTransaction = await TransactionCountPoint.find()
+  const volumeTransaction = await TransactionVolumePoint.find()
+  const contentPoints = await Point.find()
+  return res.status(200).json({
+    success : true,
+    data : {
+      countTransaction : countTransaction,
+      volumeTransaction : volumeTransaction,
+      content : contentPoints
+    }
+  })
+})
+
+

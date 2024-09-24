@@ -16,9 +16,19 @@ exports.create = asyncHandler(async (req, res, next) => {
   }
 
   console.log("name, number", name, number);
-  const exitstance = await Category.findOne({number : number})
+  const exitstance = await Category.findOne({name : name})
   if (exitstance){
     return next(new ErrorResponse("this number is already using", 400));
+  }
+   const numberExistance = await Category.findOne({number : number})
+  if (numberExistance){
+    const allCategory = await Category.find()
+    allCategory.forEach(async elem=>{
+      if (elem.number >= number){
+        elem.number += 1
+        await Category.findByIdAndUpdate(elem._id , elem)
+      }
+    }) 
   }
   const create = await Category.create({
     name,
@@ -57,7 +67,19 @@ exports.update = asyncHandler(async (req, res, next) => {
     new: name,
   };
   await upNameCat(body);
-
+  
+  const numberExistance = await Category.findOne({number : number})
+  if (numberExistance){
+    const allCategory = await Category.find()
+    allCategory.forEach(async elem=>{
+      if (elem.number >= number){
+        elem.number += 1
+        await Category.findByIdAndUpdate(elem._id , elem)
+      }
+    }) 
+  }
+  
+  
   await find.updateOne({
     name,
     number,
@@ -140,7 +162,7 @@ exports.remove = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/admins/permission/all/:id
 // @access    private
 exports.all = asyncHandler(async (req, res, next) => {
-  const findAll = await Category.find();
+  const findAll = await Category.find().sort({'number' : 1})
   res.header("Access-Control-Allow-Origin", "*");
   await res.set("Access-Control-Allow-Origin", "*");
 

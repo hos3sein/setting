@@ -4,13 +4,12 @@ const CategorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Please add a name category"],
+      required: true,
     },
 
     number: {
       type: Number,
-      unique: true,
-      required: [true, "Please add a unique number"],
+      required: true,
     },
   },
   { timestamps: true }

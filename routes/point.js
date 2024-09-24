@@ -30,5 +30,6 @@ router.get("/removetransactionrangecount/:id",protect,C.removeTransactionCountPo
 
 router.get("/allCancelPoint",C.getAllCancelPoint)
 router.get("/removecancelpoint/:id",protect,C.removeCancelPoint)
+router.get("/getAllVariables" , C.getAllVariables)
 
 module.exports = router;
